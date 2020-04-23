@@ -28,7 +28,12 @@ div.consent_form {
 
 <!-- leerer body -> Experiment wird in script-Tags erstellt-->
 <script>
-
+var get_consent = {
+  type: "html-button-response",
+  stimulus: "<div style= 'height: 700px; width: 1000px'>Bitte lesen Sie sich die Einverständniserklärung aufmerksam durch!" +
+            "<div class= 'consent_form'><embed src = 'img/Einverstaendniserklaerung.pdf' type= 'application/pdf' height= '600px' width= '900px'></embed></div></div>",
+  choices: ["Ich möchte <b>nicht</b> an der Studie teilnehmen!", "Ich habe die Erklärung <b>verstanden</b> und möchte teilnehmen!"]
+};
 </script>
 
 <body></body>
