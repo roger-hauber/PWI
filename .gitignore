@@ -1,0 +1,8 @@
+#ignore img/ folder
+img/
+
+#ignore js-psych- folder
+jspsych_6_0_5/
+
+
+
