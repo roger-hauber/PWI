@@ -28,12 +28,35 @@ div.consent_form {
     border-style: solid;
     border-color: black;*/
   }
+
+/*Ein 'container' für die Instruktionen mit Bild (also das <div> in dem dann das <div> mit dem Bild untergebracht ist..)*/
+div.container_instructions {
+  position: relative;
+  top: 30%;
+  height: 700px;
+  width: 900px;
+  border: 2px solid black;
+}
+
+/*jetzt den <div> für das Bild bei den Instruktionen selbst definieren..*/
+
+div.image_instructions {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 60%;
+  left: 50%;
+  margin-left: -100px;
+  margin-top: -100px;
+  border: 2px solid black;
+}
+
 </style>
 
 <!-- leerer body -> Experiment wird in script-Tags erstellt-->
 <script>
 // consent form wird angezeigt mit einem Textfeld, in das die VP entweder einen target text zur Einwilligung bzw. einen target text zur Verweigerung einfügen soll..
-
+      // im ersten <div> ist ein auskommentierter Rahmen formuliert -> für fein-Tuning falls man sehen möchte wo die Grenzen sind..
 var get_consent = {
   type: "survey-text",
   questions: [{prompt: "<div style= 'height: 700px; width: 1000px; <!--border: 2px solid black-->'>Bitte lesen Sie sich die Einverständniserklärung aufmerksam durch!" +
@@ -130,10 +153,31 @@ var demographics = {
   button_label: "Zum Fortfahren hier klicken.."
 };
 
+// Jetzt kommen die Instuktionen zum eigentlichen Experiments
+// zunächst einfach kurz beschrieben, was gemacht werden muss, dann weiter zu einem Beispiele
+    // issues: fürs Beispiel nur Bild oder Bild+Distraktor?
+var instructions_1 = {
+  type: "html-button-response",
+  stimulus: "<div>Im folgenden Experiment werden Sie eine Reihe von Zeichnungen bekannter Dinge sehen.<br></br>Ihre Aufgabe ist es jeweils anzugeben,"+
+            " ob der <b>letzte Buchstabe</b> des Wortes für das Bild ein <b>Vokal</b> oder ein <b>Konsonant</b> ist." +
+            "<br></br>Drücken Sie bitte die Taste <b>Q</b> auf Ihrer Tastatur, wenn das Wort mit einem <b>Vokal endet</b> " +
+            "und drücken Sie bitte die Taste <b>P</b>, wenn das Wort mit einem <b>Konsonanten endet</b>!<br></br>" +
+            /*"<div style= 'float: left'><br></br>Taste <b>D</b><br></br>Vokal</div><div style= 'float:right'><br></br>Taste <b>K</b><br></br>Konsonant</div><br></br>*/"Auf der nächsten Seite folgen ein paar Beispiele!<br></br><br></br><br></br></div>",
+  choices: ["Klicken Sie hier um fortzufahren.."]
+};
+
+var instructions_2 = {
+  type: "html-button-response",
+  stimulus: "<div class= 'container_instructions'>Hier nun ein Beispiel für Ihre Aufgabe im Experiment...<br></br>" +
+            "<div class= 'image_instructions'><img src = 'img/kuh.png'></img></div></div>"
+            /*"<div style= 'float: left'><br></br>Taste <b>D</b><br></br>Vokal</div><div style= 'float:right'><br></br>Taste <b>K</b><br></br>Konsonant</div><br></br>"Auf der nächsten Seite folgen ein paar Beispiele!<br></br><br></br><br></br></div>"*/,
+  choices: ["Klicken Sie hier um fortzufahren.."]
+};
+
 
 
 jsPsych.init({
-  timeline: [get_consent, consent_granted, consent_denied, repeat_consent, consent_denied, consent_granted, demographics],
+  timeline: [/*get_consent, consent_granted, consent_denied, repeat_consent, consent_denied, consent_granted, demographics,*/ instructions_1, instructions_2],
   /*on_finish: function() {
         jsPsych.data.get().localSave('csv','trialrun.csv');
     },*/
