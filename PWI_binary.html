@@ -49,9 +49,98 @@ var get_consent = {
   button_label: "Weiter.."
 };
 
+// Slide wenn Text für Einwilligung richtig eingefügt wird:
+var text_consent_granted = {
+  type: "html-button-response",
+  stimulus: "Sie haben Ihre Einwilligung erteilt. Klicken Sie auf Weiter um Fortzufahren..",
+  choices: ["Weiter"]
+};
+
+//slide wenn Text für Abbruch eingefügt wurde
+
+var text_abbruch = {
+  type: "html-keyboard-response",
+  stimulus: "Sie haben Ihre Einwilligung NICHT erteilt! Sie können den Browser jetzt schließen..",
+  choices: jsPsych.NO_KEYS
+};
+
+// Slide, der gezeigt wird bevor die EV nochmal angezeigt wird (für den Fall, dass kein valider input kommt..)
+
+var text_repeat_consent = {
+  type: "html-button-response",
+  stimulus: "<p>Ihre Eingabe war ungültig.</p> <p>Bitte lesen Sie sich nochmal die Einverständniserklärung durch und fügen Sie den richtigen Text ein!</p>",
+  choices: ["Zurück zur Einverständniserklärung.."]
+};
+
+// jetzt braucht es drei conditional prozeduren: 1. Einwilligung 2. Abbruch 3. Kein valider Text
+// Einwilligung
+
+var consent_granted = {
+  timeline: [text_consent_granted],
+  conditional_function: function(){
+// Definiere was wir der Zieltext ist, den wir reinkopiert haben wollen
+  var target_text_granted = "Ich erkläre hiermit meine freiwilligeEinwilligung zur Teilnahme an der geplanten Un-tersuchung und zur Verarbeitung meiner Daten im Rahmen der Studie Sprachprodukti-onsexperiment SSI-4wie im Informationsteil beschrieben";
+  var text_response = JSON.parse(jsPsych.data.getLastTrialData().values()[0].responses).Q0;
+  //var bool_test = text_response == "Ich erkläre hiermit meine freiwilligeEinwilligung zur Teilnahme an der geplanten Un-tersuchung und zur Verarbeitung meiner Daten im Rahmen der Studie Sprachprodukti-onsexperiment SSI-4wie im Informationsteil beschrieben";
+  //console.log(text_response);
+  //console.log(bool_test);
+  if (text_response == target_text_granted){
+    return true;
+  } else {
+    return false;
+  }
+ }
+};
+
+// Jetzt für den Fall dass EV verweigert wird (also der richtige Text dafür eingefügt wird..)
+var consent_denied = {
+  timeline: [text_abbruch],
+  conditional_function: function(){
+// Definiere was der Zieltext ist, den wir reinkopiert haben wollen
+  var target_text_denied = "Ich willige nicht ein und möchte nicht an der Studie teilnehmen!";
+  var text_response = JSON.parse(jsPsych.data.getLastTrialData().values()[0].responses).Q0;
+  if (text_response == target_text_denied){
+    return true;
+  } else {
+    return false;
+  }
+ }
+};
+
+// für den Fall, dass kein valider Text eingegeben wurde..
+
+var repeat_consent = {
+  timeline: [text_repeat_consent, get_consent],
+  conditional_function: function(){
+// Definiere was der Zieltext ist, den wir reinkopiert haben wollen
+  var target_text_denied = "Ich willige nicht ein und möchte nicht an der Studie teilnehmen!";
+  var target_text_granted = "Ich erkläre hiermit meine freiwilligeEinwilligung zur Teilnahme an der geplanten Un-tersuchung und zur Verarbeitung meiner Daten im Rahmen der Studie Sprachprodukti-onsexperiment SSI-4wie im Informationsteil beschrieben";
+  var text_response = JSON.parse(jsPsych.data.getLastTrialData().values()[0].responses).Q0;
+  if (text_response != target_text_denied && text_response != target_text_granted){
+    return true;
+  } else {
+    return false;
+  }
+ }
+};
+
+// wenn consent gegeben wurde und text_consent_granted gezeigt wurde geht es weiter mit demographics
+
+var demographics = {
+  type: "survey-text",
+  questions: [
+    {prompt: "Geben Sie bitte Ihr Geschlecht an!", placeholder: "m/w/d", required: true},
+    {prompt: "Wie alt sind Sie?", placeholder: "Alter", required: true},
+    {prompt: "Sind Sie deutsche/-r Muttersprachler/-in?", placeholder: "ja/nein", required: true}
+    ],
+  preamble: "Zunächst benötigen wir einige demopraphische Angaben..<br></br>Bitte füllen Sie hierfür die Textfelder unten aus!",
+  button_label: "Zum Fortfahren hier klicken.."
+};
+
+
 
 jsPsych.init({
-  timeline: [get_consent],
+  timeline: [get_consent, consent_granted, consent_denied, repeat_consent, consent_denied, consent_granted, demographics],
   /*on_finish: function() {
         jsPsych.data.get().localSave('csv','trialrun.csv');
     },*/
