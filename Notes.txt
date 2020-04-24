@@ -1,0 +1,6 @@
+------Hilfreiche Notizen------
+
+
+--- Bezüglich Zentrierung/Positionierung von <div>
+	-- den 'parent' mit position: relative ausrichten
+	-- dann den 'child' mit position: absolute innerhalb des parents positionieren!
